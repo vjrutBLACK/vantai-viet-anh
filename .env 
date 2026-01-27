@@ -1,0 +1,15 @@
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=tudev
+DB_PASSWORD=
+DB_DATABASE=vantai_anh_viet
+
+JWT_SECRET=dev-secret
+JWT_EXPIRES_IN=7d
+JWT_REFRESH_SECRET=dev-refresh-secret
+JWT_REFRESH_EXPIRES_IN=30d
+
+PORT=3000
+NODE_ENV=development
+REDIS_HOST=localhost
+REDIS_PORT=6379
