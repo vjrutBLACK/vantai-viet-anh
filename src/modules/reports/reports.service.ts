@@ -166,7 +166,8 @@ export class ReportsService {
       .andWhere('trip.status = :status', { status: 'completed' })
       .groupBy('trip.vehicleId')
       .addGroupBy('vehicle.licensePlate')
-      .orderBy('totalProfit', 'DESC')
+      // Order directly by aggregate expression to avoid alias case issues on Postgres
+      .orderBy('SUM(trip.profit)', 'DESC')
       .limit(10);
 
     if (startDate && endDate) {
@@ -210,7 +211,8 @@ export class ReportsService {
       .andWhere('trip.status = :status', { status: 'completed' })
       .groupBy('trip.driverId')
       .addGroupBy('employee.fullName')
-      .orderBy('totalProfit', 'DESC')
+      // Order directly by aggregate expression to avoid alias case issues on Postgres
+      .orderBy('SUM(trip.profit)', 'DESC')
       .limit(10);
 
     if (startDate && endDate) {
