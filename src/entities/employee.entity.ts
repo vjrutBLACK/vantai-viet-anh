@@ -40,6 +40,16 @@ export class Employee {
   @Column({ type: 'varchar', length: 255, nullable: true })
   email: string;
 
+  /** Lương nền (cố định); hoa hồng chuyến / thu nhập khác tính riêng (commission, v.v.) */
+  @Column({
+    type: 'decimal',
+    precision: 15,
+    scale: 2,
+    default: 0,
+    name: 'base_salary',
+  })
+  baseSalary: number;
+
   @Column({ type: 'varchar', length: 50, nullable: true })
   @Index()
   position: string; // lái xe, phụ xe, quản lý, etc.
@@ -52,7 +62,7 @@ export class Employee {
 
   @Column({ type: 'varchar', length: 20, default: 'active' })
   @Index()
-  status: string; // active, inactive
+  status: string; // active, inactive, on_leave
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

@@ -56,6 +56,8 @@ CREATE TABLE vehicles (
     year INTEGER,
     capacity DECIMAL(10, 2), -- Tải trọng (tấn)
     status VARCHAR(20) NOT NULL DEFAULT 'active', -- active, inactive, maintenance
+    maintenance_cost DECIMAL(15, 2), -- Chi phí bảo trì khi status = maintenance
+    maintenance_transaction_id UUID, -- FK to transactions(id), add via migration (transactions created later)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(company_id, license_plate)
@@ -132,10 +134,8 @@ CREATE TABLE trips (
     cargo_weight DECIMAL(10, 2),
     cargo_quantity INTEGER,
     
-    -- Location
-    origin VARCHAR(255),
-    destination VARCHAR(255),
-    distance DECIMAL(10, 2), -- km
+    -- Địa chỉ / tuyến chuyến (một trường)
+    address TEXT,
     
     -- Financial
     revenue DECIMAL(15, 2) DEFAULT 0,

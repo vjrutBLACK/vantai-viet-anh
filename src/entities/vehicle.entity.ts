@@ -50,6 +50,14 @@ export class Vehicle {
   @Index()
   status: string; // active, inactive, maintenance
 
+  /** Chi phí bảo trì - chỉ khi status = maintenance */
+  @Column({ type: 'decimal', precision: 15, scale: 2, nullable: true, name: 'maintenance_cost' })
+  maintenanceCost: number;
+
+  /** Transaction REPAIR gắn với chi phí bảo trì hiện tại (để update khi đổi cost) */
+  @Column({ name: 'maintenance_transaction_id', nullable: true })
+  maintenanceTransactionId: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

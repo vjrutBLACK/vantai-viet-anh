@@ -14,6 +14,13 @@ export class QueryVehicleDto {
   @Min(1)
   limit?: number = 20;
 
+  // Support frontend param name `pageSize`
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  pageSize?: number;
+
   @IsOptional()
   @IsString()
   search?: string;

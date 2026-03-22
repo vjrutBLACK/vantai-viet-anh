@@ -11,14 +11,20 @@ import { Customer } from '../../entities/customer.entity';
 import { DataMapping } from '../../entities/data-mapping.entity';
 import { ImportLog } from '../../entities/import-log.entity';
 import { TripImportProcessor } from './processors/trip-import.processor';
+import { Commission } from '../../entities/commission.entity';
+import { DebtsModule } from '../debts/debts.module';
+import { TransactionsModule } from '../transactions/transactions.module';
 
 @Module({
   imports: [
+    DebtsModule,
+    TransactionsModule,
     TypeOrmModule.forFeature([
       Trip,
       Vehicle,
       Employee,
       Customer,
+      Commission,
       DataMapping,
       ImportLog,
     ]),

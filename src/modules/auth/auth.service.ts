@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { User } from '../../entities/user.entity';
 import { LoginDto } from './dto/login.dto';
+import { RbacService } from '../rbac/rbac.service';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
     private userRepository: Repository<User>,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private rbacService: RbacService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -46,11 +48,14 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     const user = await this.validateUser(loginDto.email, loginDto.password);
 
+    const permissions = await this.rbacService.getUserPermissions(user.id);
+
     const payload = {
       sub: user.id,
       email: user.email,
       companyId: user.companyId,
       role: user.role,
+      permissions,
     };
 
     const accessToken = this.jwtService.sign(payload);
@@ -87,6 +92,7 @@ export class AuthService {
         email: user.email,
         companyId: user.companyId,
         role: user.role,
+        permissions: await this.rbacService.getUserPermissions(user.id),
       };
 
       const accessToken = this.jwtService.sign(newPayload);

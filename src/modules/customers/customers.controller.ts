@@ -1,11 +1,11 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -38,8 +38,34 @@ export class CustomersController {
 
   @Get(':id')
   async findOne(@CompanyId() companyId: string, @Param('id') id: string) {
-    const data = await this.customersService.findOne(companyId, id);
+    const data = await this.customersService.getDetail(companyId, id);
     return { success: true, data };
+  }
+
+  @Get(':id/trips')
+  async getTrips(
+    @CompanyId() companyId: string,
+    @Param('id') id: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const pageNum = page ? parseInt(page, 10) || 1 : 1;
+    const limitNum = limit ? parseInt(limit, 10) || 20 : 20;
+    const result = await this.customersService.getTrips(companyId, id, pageNum, limitNum);
+    return { success: true, ...result };
+  }
+
+  @Get(':id/payments')
+  async getPayments(
+    @CompanyId() companyId: string,
+    @Param('id') id: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const pageNum = page ? parseInt(page, 10) || 1 : 1;
+    const limitNum = limit ? parseInt(limit, 10) || 20 : 20;
+    const result = await this.customersService.getPayments(companyId, id, pageNum, limitNum);
+    return { success: true, ...result };
   }
 
   @Patch(':id')
@@ -48,11 +74,7 @@ export class CustomersController {
     @Param('id') id: string,
     @Body() updateCustomerDto: UpdateCustomerDto,
   ) {
-    const data = await this.customersService.update(
-      companyId,
-      id,
-      updateCustomerDto,
-    );
+    const data = await this.customersService.update(companyId, id, updateCustomerDto);
     return { success: true, data };
   }
 
@@ -62,3 +84,4 @@ export class CustomersController {
     return { success: true, message: 'Customer deleted successfully' };
   }
 }
+

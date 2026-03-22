@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsEmail } from 'class-validator';
+import { IsString, IsOptional, IsEmail, IsUUID, IsNumber, Min, Max } from 'class-validator';
 
 export class CreateCustomerDto {
   @IsString()
@@ -27,6 +27,16 @@ export class CreateCustomerDto {
   @IsString()
   @IsOptional()
   contactPerson?: string;
+
+  @IsUUID()
+  @IsOptional()
+  contactEmployeeId?: string;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  @Max(100)
+  commissionRate?: number;
 
   @IsString()
   @IsOptional()

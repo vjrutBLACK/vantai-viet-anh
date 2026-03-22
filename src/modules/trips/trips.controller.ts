@@ -16,8 +16,10 @@ import { Express } from 'express';
 import { TripsService } from './trips.service';
 import { ExcelService } from './excel.service';
 import { CreateTripDto } from './dto/create-trip.dto';
+import { AssignVehicleDto } from './dto/assign-vehicle.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { QueryTripDto } from './dto/query-trip.dto';
+import { UpdateTripStatusDto } from './dto/update-trip-status.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CompanyId } from '../../common/decorators/company-id.decorator';
 import { InjectQueue } from '@nestjs/bull';
@@ -57,6 +59,28 @@ export class TripsController {
     return { success: true, data };
   }
 
+  /** Must be before @Get(':id') — otherwise "export" is parsed as trip id */
+  @Get('export')
+  async export(
+    @CompanyId() companyId: string,
+    @Query() query: QueryTripDto,
+  ) {
+    const trips = await this.tripsService.findAll(companyId, {
+      ...query,
+      limit: 10000, // Export all
+    });
+
+    const buffer = await this.excelService.exportToExcel(companyId, trips.data);
+
+    return {
+      success: true,
+      data: {
+        buffer: buffer.toString('base64'),
+        fileName: `trips_export_${new Date().toISOString().split('T')[0]}.xlsx`,
+      },
+    };
+  }
+
   @Get(':id')
   async findOne(@CompanyId() companyId: string, @Param('id') id: string) {
     const data = await this.tripsService.findOne(companyId, id);
@@ -70,6 +94,26 @@ export class TripsController {
     @Body() updateTripDto: UpdateTripDto,
   ) {
     const data = await this.tripsService.update(companyId, id, updateTripDto);
+    return { success: true, data };
+  }
+
+  @Patch(':id/assign')
+  async assign(
+    @CompanyId() companyId: string,
+    @Param('id') id: string,
+    @Body() dto: AssignVehicleDto,
+  ) {
+    const data = await this.tripsService.assign(companyId, id, dto.vehicleId, dto.driverId);
+    return { success: true, data };
+  }
+
+  @Patch(':id/status')
+  async updateStatus(
+    @CompanyId() companyId: string,
+    @Param('id') id: string,
+    @Body() dto: UpdateTripStatusDto,
+  ) {
+    const data = await this.tripsService.updateStatus(companyId, id, dto.status);
     return { success: true, data };
   }
 
@@ -149,26 +193,5 @@ export class TripsController {
     );
 
     return { success: true, data: result };
-  }
-
-  @Get('export')
-  async export(
-    @CompanyId() companyId: string,
-    @Query() query: QueryTripDto,
-  ) {
-    const trips = await this.tripsService.findAll(companyId, {
-      ...query,
-      limit: 10000, // Export all
-    });
-
-    const buffer = await this.excelService.exportToExcel(companyId, trips.data);
-
-    return {
-      success: true,
-      data: {
-        buffer: buffer.toString('base64'),
-        fileName: `trips_export_${new Date().toISOString().split('T')[0]}.xlsx`,
-      },
-    };
   }
 }

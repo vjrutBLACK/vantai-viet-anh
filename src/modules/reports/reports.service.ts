@@ -250,7 +250,8 @@ export class ReportsService {
       .andWhere('trip.status = :status', { status: 'completed' })
       .groupBy('trip.customerId')
       .addGroupBy('customer.name')
-      .orderBy('totalRevenue', 'DESC')
+      // Order directly by aggregate expression to avoid alias case issues on Postgres
+      .orderBy('SUM(trip.revenue)', 'DESC')
       .limit(10);
 
     if (startDate && endDate) {

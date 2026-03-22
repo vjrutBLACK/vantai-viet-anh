@@ -14,19 +14,18 @@ Dựa trên nghiệp vụ quản lý vận tải, mỗi dòng Excel thường ch
 | D | Lái xe | employees | full_name | VARCHAR(255) | Lookup theo tên, position = "lái xe" |
 | E | Phụ xe | employees | full_name | VARCHAR(255) | Lookup theo tên, position = "phụ xe", nullable |
 | F | Khách hàng | customers | name | VARCHAR(255) | Lookup hoặc tạo mới |
-| G | Điểm đi | trips | origin | VARCHAR(255) | |
-| H | Điểm đến | trips | destination | VARCHAR(255) | |
-| I | Khoảng cách (km) | trips | distance | DECIMAL(10,2) | Parse số, có thể có dấu phẩy |
-| J | Loại hàng | trips | cargo_type | VARCHAR(100) | |
-| K | Trọng lượng (tấn) | trips | cargo_weight | DECIMAL(10,2) | Parse số |
-| L | Số lượng | trips | cargo_quantity | INTEGER | |
-| M | Doanh thu | trips | revenue | DECIMAL(15,2) | Parse số tiền, có thể có dấu phẩy/chấm |
-| N | Chi phí xăng | trips | fuel_cost | DECIMAL(15,2) | |
-| O | Chi phí cầu đường | trips | toll_cost | DECIMAL(15,2) | |
-| P | Lương lái xe | trips | driver_salary | DECIMAL(15,2) | |
-| Q | Chi phí khác | trips | other_costs | DECIMAL(15,2) | |
-| R | Lợi nhuận | trips | profit | DECIMAL(15,2) | **Tính toán**: revenue - (fuel + toll + salary + other) |
-| S | Ghi chú | trips | notes | TEXT | |
+| G | Địa chỉ chuyến | trips | address | TEXT | Một cột (thay điểm đi/đến/khoảng cách) |
+| H | Loại hàng | trips | cargo_type | VARCHAR(100) | |
+| I | Trọng lượng (tấn) | trips | cargo_weight | DECIMAL(10,2) | Parse số |
+| J | Số lượng | trips | cargo_quantity | INTEGER | |
+| K | Doanh thu | trips | revenue | DECIMAL(15,2) | Parse số tiền, có thể có dấu phẩy/chấm |
+| L | Chi phí xăng | trips | fuel_cost | DECIMAL(15,2) | |
+| M | Chi phí cầu đường | trips | toll_cost | DECIMAL(15,2) | |
+| N | Chi phí khác | trips | other_costs | DECIMAL(15,2) | |
+| O | Lợi nhuận | trips | profit | DECIMAL(15,2) | **Tính toán**: revenue - (fuel + toll + salary + other) |
+| P | Ghi chú | trips | notes | TEXT | |
+
+**`driver_salary` trên trip:** không có cột Excel — khi import, server gán = `employees.base_salary` của lái xe (sau lookup cột D). Export Excel vẫn có cột “Lương lái xe” (giá trị đã lưu trên trip).
 
 ## Quy trình Import chi tiết
 
@@ -261,11 +260,11 @@ Tương tự như Employee, sử dụng fuzzy matching.
 ### Bước 4: Create Trip Record
 ```javascript
 async function createTrip(companyId, rowData, entities) {
-  // Calculate profit
+  const driverSalary = Number(entities.driver.base_salary ?? 0);
   const profit = rowData.revenue - (
     rowData.fuel_cost + 
     rowData.toll_cost + 
-    rowData.driver_salary + 
+    driverSalary + 
     rowData.other_costs
   );
   
@@ -286,13 +285,11 @@ async function createTrip(companyId, rowData, entities) {
     cargo_type: rowData.cargo_type,
     cargo_weight: rowData.cargo_weight,
     cargo_quantity: rowData.cargo_quantity,
-    origin: rowData.origin,
-    destination: rowData.destination,
-    distance: rowData.distance,
+    address: rowData.address,
     revenue: rowData.revenue,
     fuel_cost: rowData.fuel_cost,
     toll_cost: rowData.toll_cost,
-    driver_salary: rowData.driver_salary,
+    driver_salary: driverSalary,
     other_costs: rowData.other_costs,
     profit: profit, // Use calculated value
     status: 'completed',
@@ -473,8 +470,7 @@ WHERE company_id = ?
 
 ### Optional but Recommended
 - trip_code (nếu không có sẽ auto-generate)
-- destination
-- distance
+- address (địa chỉ chuyến)
 
 ### Business Rules
 - trip_date không được trong tương lai (có thể config)

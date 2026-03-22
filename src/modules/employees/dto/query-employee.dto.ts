@@ -18,6 +18,7 @@ export class QueryEmployeeDto {
   @IsString()
   search?: string;
 
+  /** Lọc theo `employees.position` — ví dụ `lái xe`, `phụ xe` */
   @IsOptional()
   @IsString()
   position?: string;

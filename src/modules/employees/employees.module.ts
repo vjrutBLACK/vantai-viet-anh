@@ -3,9 +3,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EmployeesService } from './employees.service';
 import { EmployeesController } from './employees.controller';
 import { Employee } from '../../entities/employee.entity';
+import { Commission } from '../../entities/commission.entity';
+import { Trip } from '../../entities/trip.entity';
+import { Transaction } from '../../entities/transaction.entity';
+import { SalariesModule } from '../salaries/salaries.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Employee])],
+  imports: [
+    SalariesModule,
+    TypeOrmModule.forFeature([Employee, Commission, Trip, Transaction]),
+  ],
   controllers: [EmployeesController],
   providers: [EmployeesService],
   exports: [EmployeesService],

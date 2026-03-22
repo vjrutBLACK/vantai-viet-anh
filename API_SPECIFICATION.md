@@ -251,6 +251,7 @@ Tạo mới nhân viên
 {
   "employeeCode": "NV001",
   "fullName": "Nguyễn Văn A",
+  "baseSalary": 8000000,
   "phone": "0123456789",
   "email": "nva@example.com",
   "position": "lái xe",
@@ -258,6 +259,8 @@ Tạo mới nhân viên
   "licenseType": "C"
 }
 ```
+
+**Lưu ý:** Bắt buộc **`baseSalary`** (≥ 0) — lương nền; hoa hồng chuyến và khoản khác tính riêng.
 
 ### PUT /api/v1/employees/:id
 Cập nhật nhân viên
@@ -373,9 +376,7 @@ Danh sách chuyến xe
       "cargoType": "Gạo",
       "cargoWeight": 8.5,
       "cargoQuantity": 1,
-      "origin": "Hà Nội",
-      "destination": "Hồ Chí Minh",
-      "distance": 1700,
+      "address": "Hà Nội → Hồ Chí Minh",
       "revenue": 15000000,
       "fuelCost": 3000000,
       "tollCost": 500000,
@@ -408,19 +409,16 @@ Tạo mới chuyến xe
   "cargoType": "Gạo",
   "cargoWeight": 8.5,
   "cargoQuantity": 1,
-  "origin": "Hà Nội",
-  "destination": "Hồ Chí Minh",
-  "distance": 1700,
+  "address": "Hà Nội → Hồ Chí Minh",
   "revenue": 15000000,
   "fuelCost": 3000000,
   "tollCost": 500000,
-  "driverSalary": 2000000,
   "otherCosts": 500000,
   "notes": "Giao hàng đúng hạn"
 }
 ```
 
-**Note:** `profit` sẽ được tính tự động: `revenue - (fuelCost + tollCost + driverSalary + otherCosts)`
+**Note:** `driverSalary` **không** gửi khi tạo/sửa — server gán từ `employees.base_salary` của tài xế khi có `driverId` (tạo chuyến, đổi tài xế, hoặc `PATCH .../assign`). `profit` = `revenue - (fuelCost + tollCost + driverSalary + otherCosts)`.
 
 ### PUT /api/v1/trips/:id
 Cập nhật chuyến xe

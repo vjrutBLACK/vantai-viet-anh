@@ -13,6 +13,11 @@ import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { QueryEmployeeDto } from './dto/query-employee.dto';
+import {
+  QueryEmployeeTripsDto,
+  QueryEmployeeSalaryHistoryDto,
+  QueryEmployeeIncomeDto,
+} from './dto/query-employee-history.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CompanyId } from '../../common/decorators/company-id.decorator';
 
@@ -42,6 +47,60 @@ export class EmployeesController {
     @Query('search') search?: string,
   ) {
     const data = await this.employeesService.getDrivers(companyId, search);
+    return { success: true, data };
+  }
+
+  @Get(':id/trips')
+  async getTrips(
+    @CompanyId() companyId: string,
+    @Param('id') id: string,
+    @Query() query: QueryEmployeeTripsDto,
+  ) {
+    const result = await this.employeesService.getTripHistory(
+      companyId,
+      id,
+      query,
+    );
+    return { success: true, ...result };
+  }
+
+  @Get(':id/salaries')
+  async getSalaries(
+    @CompanyId() companyId: string,
+    @Param('id') id: string,
+    @Query() query: QueryEmployeeSalaryHistoryDto,
+  ) {
+    const data = await this.employeesService.getSalaryHistory(
+      companyId,
+      id,
+      query,
+    );
+    return { success: true, data };
+  }
+
+  @Get(':id/income')
+  async getIncome(
+    @CompanyId() companyId: string,
+    @Param('id') id: string,
+    @Query() query: QueryEmployeeIncomeDto,
+  ) {
+    const data = await this.employeesService.getIncome(companyId, id, query);
+    return { success: true, data };
+  }
+
+  @Get(':id/commissions')
+  async getCommissions(
+    @CompanyId() companyId: string,
+    @Param('id') id: string,
+    @Query('start') start?: string, // YYYY-MM
+    @Query('end') end?: string, // YYYY-MM
+  ) {
+    const data = await this.employeesService.getCommissionByMonth(
+      companyId,
+      id,
+      start,
+      end,
+    );
     return { success: true, data };
   }
 

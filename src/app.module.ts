@@ -10,7 +10,13 @@ import { CustomersModule } from './modules/customers/customers.module';
 import { TripsModule } from './modules/trips/trips.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { ReportsModule } from './modules/reports/reports.module';
+import { RbacModule } from './modules/rbac/rbac.module';
+import { UsersModule } from './modules/users/users.module';
+import { ImportModule } from './modules/import/import.module';
 import { DatabaseModule } from './database/database.module';
+import { SuppliersModule } from './modules/suppliers/suppliers.module';
+import { DebtsModule } from './modules/debts/debts.module';
+import { SalariesModule } from './modules/salaries/salaries.module';
 
 @Module({
   imports: [
@@ -25,6 +31,7 @@ import { DatabaseModule } from './database/database.module';
         port: parseInt(process.env.REDIS_PORT || '6379'),
       },
     }),
+    RbacModule,
     AuthModule,
     CompaniesModule,
     VehiclesModule,
@@ -33,6 +40,11 @@ import { DatabaseModule } from './database/database.module';
     TripsModule,
     TransactionsModule,
     ReportsModule,
+    UsersModule,
+    ImportModule,
+    SuppliersModule,
+    DebtsModule,
+    SalariesModule,
   ],
 })
 export class AppModule {}

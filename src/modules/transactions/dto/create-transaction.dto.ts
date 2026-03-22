@@ -4,7 +4,7 @@ import {
   IsNumber,
   IsDateString,
   IsUUID,
-  IsEnum,
+  Min,
 } from 'class-validator';
 
 export class CreateTransactionDto {
@@ -12,22 +12,38 @@ export class CreateTransactionDto {
   @IsOptional()
   transactionCode?: string;
 
+  /** Alias của `date` (chuẩn FE) */
   @IsDateString()
-  transactionDate: string;
+  @IsOptional()
+  transactionDate?: string;
 
-  @IsEnum(['income', 'expense'])
-  transactionType: string;
+  @IsDateString()
+  @IsOptional()
+  date?: string;
+
+  /** income | expense | INCOME | EXPENSE */
+  @IsString()
+  @IsOptional()
+  transactionType?: string;
 
   @IsString()
   @IsOptional()
-  category?: string;
+  type?: string;
+
+  @IsString()
+  category: string;
 
   @IsNumber()
+  @Min(0.01)
   amount: number;
 
   @IsString()
   @IsOptional()
   description?: string;
+
+  @IsString()
+  @IsOptional()
+  note?: string;
 
   @IsUUID()
   @IsOptional()

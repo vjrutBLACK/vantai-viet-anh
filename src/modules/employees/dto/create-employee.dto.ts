@@ -1,12 +1,18 @@
-import { IsString, IsOptional, IsEmail } from 'class-validator';
+import { IsString, IsOptional, IsEmail, IsNumber, Min } from 'class-validator';
 
 export class CreateEmployeeDto {
   @IsString()
   @IsOptional()
   employeeCode?: string;
 
+  /** Alias spec: ưu tiên fullName nếu có */
   @IsString()
-  fullName: string;
+  @IsOptional()
+  fullName?: string;
+
+  @IsString()
+  @IsOptional()
+  name?: string;
 
   @IsString()
   @IsOptional()
@@ -16,6 +22,7 @@ export class CreateEmployeeDto {
   @IsOptional()
   email?: string;
 
+  /** Ví dụ: `lái xe`, `phụ xe` — không dùng trường `role` riêng */
   @IsString()
   @IsOptional()
   position?: string;
@@ -31,4 +38,13 @@ export class CreateEmployeeDto {
   @IsString()
   @IsOptional()
   status?: string;
+
+  /**
+   * Lương nền (VND, ≥ 0) — bắt buộc khi tạo.
+   * Phần thu nhập còn lại (hoa hồng chuyến, v.v.) tính riêng, không nhập ở đây.
+   * Dùng làm `trips.driverSalary` khi gán tài xế.
+   */
+  @IsNumber()
+  @Min(0)
+  baseSalary: number;
 }

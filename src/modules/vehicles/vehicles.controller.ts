@@ -13,6 +13,8 @@ import { VehiclesService } from './vehicles.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { QueryVehicleDto } from './dto/query-vehicle.dto';
+import { QueryVehicleTripsDto } from './dto/query-vehicle-trips.dto';
+import { QueryVehicleRepairsDto } from './dto/query-vehicle-repairs.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CompanyId } from '../../common/decorators/company-id.decorator';
 
@@ -39,6 +41,34 @@ export class VehiclesController {
   @Get('stats')
   async getStats(@CompanyId() companyId: string) {
     const data = await this.vehiclesService.getStats(companyId);
+    return { success: true, data };
+  }
+
+  @Get(':id/trips')
+  async getTrips(
+    @CompanyId() companyId: string,
+    @Param('id') id: string,
+    @Query() query: QueryVehicleTripsDto,
+  ) {
+    const result = await this.vehiclesService.getTripsHistory(
+      companyId,
+      id,
+      query,
+    );
+    return { success: true, ...result };
+  }
+
+  @Get(':id/repairs')
+  async getRepairs(
+    @CompanyId() companyId: string,
+    @Param('id') id: string,
+    @Query() query: QueryVehicleRepairsDto,
+  ) {
+    const data = await this.vehiclesService.getRepairHistory(
+      companyId,
+      id,
+      query,
+    );
     return { success: true, data };
   }
 

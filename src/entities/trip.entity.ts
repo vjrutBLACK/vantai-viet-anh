@@ -70,6 +70,34 @@ export class Trip {
   @Index()
   customerId: string;
 
+  /** Trip-level commission contact (overrides customer.contactEmployeeId when set) */
+  @ManyToOne(() => Employee, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'contact_employee_id' })
+  contactEmployee: Employee;
+
+  @Column({ name: 'contact_employee_id', nullable: true })
+  contactEmployeeId: string;
+
+  /** Trip-level commission % (overrides customer.commissionRate when set) */
+  @Column({
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    nullable: true,
+    name: 'commission_rate_applied',
+  })
+  commissionRateApplied: number;
+
+  /** Amount customer paid for this trip (partial payment tracking) */
+  @Column({
+    type: 'decimal',
+    precision: 15,
+    scale: 2,
+    default: 0,
+    name: 'paid_amount',
+  })
+  paidAmount: number;
+
   // Cargo Information
   @Column({ type: 'varchar', length: 100, nullable: true, name: 'cargo_type' })
   cargoType: string;
@@ -80,15 +108,9 @@ export class Trip {
   @Column({ type: 'int', nullable: true, name: 'cargo_quantity' })
   cargoQuantity: number;
 
-  // Location
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  origin: string;
-
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  destination: string;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  distance: number;
+  /** Địa chỉ / tuyến chuyến (một trường duy nhất) */
+  @Column({ type: 'text', nullable: true, name: 'address' })
+  address: string;
 
   // Financial
   @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })
@@ -100,6 +122,7 @@ export class Trip {
   @Column({ type: 'decimal', precision: 15, scale: 2, default: 0, name: 'toll_cost' })
   tollCost: number;
 
+  /** Snapshot lương trừ chuyến — server gán từ `Employee.baseSalary` khi gán tài xế (không nhận từ FE) */
   @Column({ type: 'decimal', precision: 15, scale: 2, default: 0, name: 'driver_salary' })
   driverSalary: number;
 

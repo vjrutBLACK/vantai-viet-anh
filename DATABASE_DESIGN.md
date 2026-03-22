@@ -83,10 +83,8 @@ trips
 - cargo_weight (DECIMAL) -- Trọng lượng (tấn)
 - cargo_quantity (INTEGER) -- Số lượng
   
-  -- Địa điểm
-- origin (VARCHAR) -- Điểm đi
-- destination (VARCHAR) -- Điểm đến
-- distance (DECIMAL) -- Khoảng cách (km)
+  -- Địa chỉ chuyến
+- address (TEXT) -- Địa chỉ / tuyến (một trường)
   
   -- Tài chính
 - revenue (DECIMAL) -- Doanh thu
@@ -151,18 +149,17 @@ Mỗi dòng Excel thường chứa:
 - **Cột D**: Lái xe (driver_name) → lookup employees
 - **Cột E**: Phụ xe (co_driver_name) → lookup employees
 - **Cột F**: Khách hàng (customer_name) → lookup customers
-- **Cột G**: Điểm đi (origin)
-- **Cột H**: Điểm đến (destination)
-- **Cột I**: Khoảng cách (distance)
-- **Cột J**: Loại hàng (cargo_type)
-- **Cột K**: Trọng lượng (cargo_weight)
-- **Cột L**: Doanh thu (revenue)
-- **Cột M**: Chi phí xăng (fuel_cost)
-- **Cột N**: Chi phí cầu đường (toll_cost)
-- **Cột O**: Lương lái xe (driver_salary)
-- **Cột P**: Chi phí khác (other_costs)
-- **Cột Q**: Lợi nhuận (profit) - có thể tính toán
-- **Cột R**: Ghi chú (notes)
+- **Cột G**: Địa chỉ chuyến (address)
+- **Cột H**: Loại hàng (cargo_type)
+- **Cột I**: Trọng lượng (cargo_weight)
+- **Cột J**: Số lượng (cargo_quantity)
+- **Cột K**: Doanh thu (revenue)
+- **Cột L**: Chi phí xăng (fuel_cost)
+- **Cột M**: Chi phí cầu đường (toll_cost)
+- **Cột N**: Chi phí khác (other_costs)
+- **Cột O**: Lợi nhuận (profit) — có thể tính toán
+- **Cột P**: Ghi chú (notes)
+- **`driver_salary`**: không nhập Excel — lấy từ `employees.base_salary` của lái xe khi import/tạo chuyến
 
 ### Quy trình Import:
 

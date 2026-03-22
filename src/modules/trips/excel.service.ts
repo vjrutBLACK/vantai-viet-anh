@@ -8,6 +8,8 @@ import { Employee } from '../../entities/employee.entity';
 import { Customer } from '../../entities/customer.entity';
 import { DataMapping } from '../../entities/data-mapping.entity';
 import { Trip } from '../../entities/trip.entity';
+import { DebtsService } from '../debts/debts.service';
+import { TransactionsService } from '../transactions/transactions.service';
 
 @Injectable()
 export class ExcelService {
@@ -26,6 +28,8 @@ export class ExcelService {
     private dataMappingRepository: Repository<DataMapping>,
     @InjectRepository(Trip)
     private tripRepository: Repository<Trip>,
+    private debtsService: DebtsService,
+    private transactionsService: TransactionsService,
   ) {}
 
   async validateExcel(
@@ -171,13 +175,11 @@ export class ExcelService {
           cargoType: rowData.cargoType,
           cargoWeight: rowData.cargoWeight,
           cargoQuantity: rowData.cargoQuantity,
-          origin: rowData.origin,
-          destination: rowData.destination,
-          distance: rowData.distance,
+          address: rowData.address,
           revenue: rowData.revenue,
           fuelCost: rowData.fuelCost,
           tollCost: rowData.tollCost,
-          driverSalary: rowData.driverSalary,
+          driverSalary: Number(entities.driver.baseSalary ?? 0),
           otherCosts: rowData.otherCosts,
           notes: rowData.notes,
           status: 'completed',
@@ -185,6 +187,11 @@ export class ExcelService {
 
         trip.profit = trip.calculateProfit();
         await this.tripRepository.save(trip);
+        await this.debtsService.createReceivableFromTrip(companyId, trip);
+        await this.transactionsService.createIncomeFromCompletedTripIfAbsent(
+          companyId,
+          trip,
+        );
 
         results.success.push({
           row: i + 1,
@@ -213,9 +220,7 @@ export class ExcelService {
       'Lái xe',
       'Phụ xe',
       'Khách hàng',
-      'Điểm đi',
-      'Điểm đến',
-      'Khoảng cách (km)',
+      'Địa chỉ chuyến',
       'Loại hàng',
       'Trọng lượng (tấn)',
       'Số lượng',
@@ -236,9 +241,7 @@ export class ExcelService {
       trip.driver?.fullName || '',
       trip.coDriver?.fullName || '',
       trip.customer?.name || '',
-      trip.origin || '',
-      trip.destination || '',
-      trip.distance || 0,
+      trip.address || '',
       trip.cargoType || '',
       trip.cargoWeight || 0,
       trip.cargoQuantity || 0,
@@ -267,19 +270,16 @@ export class ExcelService {
       driverName: this.parseString(row[3]),
       coDriverName: this.parseString(row[4]),
       customerName: this.parseString(row[5]),
-      origin: this.parseString(row[6]),
-      destination: this.parseString(row[7]),
-      distance: this.parseNumber(row[8]),
-      cargoType: this.parseString(row[9]),
-      cargoWeight: this.parseNumber(row[10]),
-      cargoQuantity: this.parseInt(row[11]),
-      revenue: this.parseMoney(row[12]),
-      fuelCost: this.parseMoney(row[13]),
-      tollCost: this.parseMoney(row[14]),
-      driverSalary: this.parseMoney(row[15]),
-      otherCosts: this.parseMoney(row[16]),
-      profit: this.parseMoney(row[17]),
-      notes: this.parseString(row[18]),
+      address: this.parseString(row[6]),
+      cargoType: this.parseString(row[7]),
+      cargoWeight: this.parseNumber(row[8]),
+      cargoQuantity: this.parseInt(row[9]),
+      revenue: this.parseMoney(row[10]),
+      fuelCost: this.parseMoney(row[11]),
+      tollCost: this.parseMoney(row[12]),
+      otherCosts: this.parseMoney(row[13]),
+      profit: this.parseMoney(row[14]),
+      notes: this.parseString(row[15]),
     };
   }
 

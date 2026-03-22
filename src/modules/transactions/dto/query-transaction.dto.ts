@@ -30,6 +30,14 @@ export class QueryTransactionDto {
   endDate?: string;
 
   @IsOptional()
+  @IsDateString()
+  fromDate?: string;
+
+  @IsOptional()
+  @IsDateString()
+  toDate?: string;
+
+  @IsOptional()
   @IsString()
   type?: string;
 

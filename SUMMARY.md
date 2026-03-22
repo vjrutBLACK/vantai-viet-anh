@@ -26,15 +26,13 @@
 | Lái xe | → | employees.full_name (lookup, position='lái xe') |
 | Phụ xe | → | employees.full_name (lookup, position='phụ xe') |
 | Khách hàng | → | customers.name (lookup) |
-| Điểm đi | → | trips.origin |
-| Điểm đến | → | trips.destination |
-| Khoảng cách | → | trips.distance |
+| Địa chỉ chuyến | → | trips.address |
 | Loại hàng | → | trips.cargo_type |
 | Trọng lượng | → | trips.cargo_weight |
 | Doanh thu | → | trips.revenue |
 | Chi phí xăng | → | trips.fuel_cost |
 | Chi phí cầu đường | → | trips.toll_cost |
-| Lương lái xe | → | trips.driver_salary |
+| *(không cột Excel)* | → | `trips.driver_salary` = `employees.base_salary` của lái xe |
 | Chi phí khác | → | trips.other_costs |
 | Lợi nhuận | → | trips.profit (**tính toán**: revenue - costs) |
 | Ghi chú | → | trips.notes |

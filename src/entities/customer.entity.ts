@@ -12,6 +12,7 @@ import {
 import { Company } from './company.entity';
 import { Trip } from './trip.entity';
 import { Transaction } from './transaction.entity';
+import { Employee } from './employee.entity';
 
 @Entity('customers')
 export class Customer {
@@ -48,6 +49,25 @@ export class Customer {
 
   @Column({ type: 'varchar', length: 255, nullable: true, name: 'contact_person' })
   contactPerson: string;
+
+  // Internal account owner for customer (commission recipient)
+  @ManyToOne(() => Employee, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'contact_employee_id' })
+  contactEmployee: Employee;
+
+  @Column({ name: 'contact_employee_id', nullable: true })
+  @Index()
+  contactEmployeeId: string;
+
+  @Column({
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    nullable: true,
+    name: 'commission_rate',
+    default: 0,
+  })
+  commissionRate: number; // percent
 
   @Column({ type: 'varchar', length: 20, default: 'active' })
   @Index()

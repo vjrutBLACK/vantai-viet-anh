@@ -152,19 +152,17 @@ Columns (A-S):
 - D: Lái xe
 - E: Phụ xe (optional)
 - F: Khách hàng
-- G: Điểm đi
-- H: Điểm đến
-- I: Khoảng cách (km)
-- J: Loại hàng
-- K: Trọng lượng (tấn)
-- L: Số lượng
-- M: Doanh thu
-- N: Chi phí xăng
-- O: Chi phí cầu đường
-- P: Lương lái xe
-- Q: Chi phí khác
-- R: Lợi nhuận (sẽ được tính tự động)
-- S: Ghi chú
+- G: Địa chỉ chuyến
+- H: Loại hàng
+- I: Trọng lượng (tấn)
+- J: Số lượng
+- K: Doanh thu
+- L: Chi phí xăng
+- M: Chi phí cầu đường
+- N: Chi phí khác
+- O: Lợi nhuận (sẽ được tính tự động)
+- P: Ghi chú
+- *(Lương lái trên trip lấy từ `employees.base_salary`, không có cột Excel)*
 
 ## Notes
 

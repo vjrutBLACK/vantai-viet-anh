@@ -10,6 +10,14 @@ import { Trip } from '../entities/trip.entity';
 import { Transaction } from '../entities/transaction.entity';
 import { DataMapping } from '../entities/data-mapping.entity';
 import { ImportLog } from '../entities/import-log.entity';
+import { Role } from '../entities/role.entity';
+import { Permission } from '../entities/permission.entity';
+import { RolePermission } from '../entities/role-permission.entity';
+import { UserRole } from '../entities/user-role.entity';
+import { Commission } from '../entities/commission.entity';
+import { Supplier } from '../entities/supplier.entity';
+import { Debt } from '../entities/debt.entity';
+import { SalaryConfig } from '../entities/salary-config.entity';
 
 @Module({
   imports: [
@@ -32,6 +40,14 @@ import { ImportLog } from '../entities/import-log.entity';
           Transaction,
           DataMapping,
           ImportLog,
+          Role,
+          Permission,
+          RolePermission,
+          UserRole,
+          Commission,
+          Supplier,
+          Debt,
+          SalaryConfig,
         ],
         synchronize: configService.get('NODE_ENV') === 'development',
         logging: configService.get('NODE_ENV') === 'development',

@@ -15,10 +15,12 @@ export class CreateTripDto {
   tripDate: string;
 
   @IsUUID()
-  vehicleId: string;
+  @IsOptional()
+  vehicleId?: string;
 
   @IsUUID()
-  driverId: string;
+  @IsOptional()
+  driverId?: string;
 
   @IsUUID()
   @IsOptional()
@@ -41,19 +43,41 @@ export class CreateTripDto {
 
   @IsString()
   @IsOptional()
-  origin?: string;
-
-  @IsString()
-  @IsOptional()
-  destination?: string;
-
-  @IsNumber()
-  @IsOptional()
-  distance?: number;
+  address?: string;
 
   @IsNumber()
   @IsOptional()
   revenue?: number;
+
+  /** FE alias for `revenue` */
+  @IsNumber()
+  @IsOptional()
+  price?: number;
+
+  /** FE free-text route (stored in `notes` when `notes` omitted) */
+  @IsString()
+  @IsOptional()
+  route?: string;
+
+  @IsNumber()
+  @IsOptional()
+  paidAmount?: number;
+
+  @IsNumber()
+  @IsOptional()
+  repairCost?: number;
+
+  @IsNumber()
+  @IsOptional()
+  fineCost?: number;
+
+  @IsUUID()
+  @IsOptional()
+  contactEmployeeId?: string | null;
+
+  @IsNumber()
+  @IsOptional()
+  commissionRateApplied?: number | null;
 
   @IsNumber()
   @IsOptional()
@@ -62,10 +86,6 @@ export class CreateTripDto {
   @IsNumber()
   @IsOptional()
   tollCost?: number;
-
-  @IsNumber()
-  @IsOptional()
-  driverSalary?: number;
 
   @IsNumber()
   @IsOptional()
